@@ -42,3 +42,9 @@
 
 # VS Code stuff
 .vscode/
+
+# Build folders
+**/build/*
+
+# CMake files
+CMakeUserPresets.json
