@@ -2,17 +2,17 @@ from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 
 
-class path_planning_libRecipe(ConanFile):
-    name = "path_planning_lib"
+class dijkstrasRecipe(ConanFile):
+    name = "dijkstras"
     version = "0.0.1"
     package_type = "library"
 
     # Optional metadata
     license = "<Put the package license here>"
-    author = "Andrew Helms helmsandrew3@gmail.com"
-    url = "https://github.com/andrew-helms/PathPlanningLib"
-    description = "Library for a generic path planner."
-    topics = ("Path Planning", "AStar", "Dijkstras")
+    author = "<Put your name here> <And your email here>"
+    url = "<Package recipe repository url here, for issues about the package>"
+    description = "<Description of dijkstras package here>"
+    topics = ("<Put some tag here>", "<here>", "<and here>")
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
@@ -20,7 +20,6 @@ class path_planning_libRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    # This is wrong, needs build and install the outputs of PlannerTemplate and Implementations libraries
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
 
     def config_options(self):
@@ -50,5 +49,5 @@ class path_planning_libRecipe(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["path_planning_lib"]
+        self.cpp_info.libs = ["dijkstras"]
 
