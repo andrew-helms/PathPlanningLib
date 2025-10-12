@@ -1,8 +1,14 @@
 #pragma once
 
-enum StateStatus
+namespace PathPlanningLib
 {
-    Unexplored = 0,
-    Exploring = 1,
-    Solved = 2,
-};
+    namespace PlannerTemplate
+    {
+        enum StateStatus
+        {
+            Unexplored = 0,
+            Exploring = 1,
+            Solved = 2,
+        };
+    }
+}

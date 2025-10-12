@@ -1,20 +1,31 @@
 #pragma once
 
-#include "StateStatus.hpp"
-
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
-template <class S, class A> class PathPlanner
+#include "StateStatus.hpp"
+#include "Connection.hpp"
+
+namespace PathPlanningLib
 {
-public:
-    PathPlanner(std::vector<std::shared_ptr<const A>> actions){};
-    virtual ~PathPlanner(){};
+    namespace PlannerTemplate
+    {
+        template <class S, class A> class PathPlanner
+        {
+        public:
+            PathPlanner(std::vector<std::shared_ptr<const A>> actions)
+            {
+                m_Actions = actions;
+                m_ExploredStates();
+            }
 
-    virtual bool PlanPath(std::shared_ptr<const S> start, std::shared_ptr<const A> goal) = 0;
+            virtual ~PathPlanner(){};
 
-private:
-    std::unordered_map<std::shared_ptr<const S>, StateStatus> m_ExploredStates;
-    
-};
+            virtual bool PlanPath(std::vector<std::shared_ptr<Connection>> *path, std::shared_ptr<const S> start, std::shared_ptr<const A> goal) = 0;
+
+        protected:
+            std::vector<std::shared_ptr<const A>> m_Actions;            
+        };
+    }
+}
