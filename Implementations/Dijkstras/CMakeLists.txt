@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
 
-add_library(dijkstras INTERFACE)
-target_include_directories(dijkstras INTERFACE
-    include
+project(dijkstras)
+
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE
+    ${PROJECT_SOURCE_DIR}/include
     # $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     # $<INSTALL_INTERFACE:include>`
 )
 
-find_package(planner_template CONFIG REQUIRED)
-target_link_libraries(dijkstras INTERFACE planner_template)
-target_include_directories(dijkstras INTERFACE planner_template)
+target_link_libraries(${PROJECT_NAME} INTERFACE planner_template)
+target_include_directories(${PROJECT_NAME} INTERFACE planner_template)
 
 # include(CMakePackageConfigHelpers)
 # write_basic_package_version_file(
