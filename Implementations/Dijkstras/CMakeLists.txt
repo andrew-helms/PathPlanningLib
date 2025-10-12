@@ -10,7 +10,6 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 )
 
 target_link_libraries(${PROJECT_NAME} INTERFACE planner_template)
-target_include_directories(${PROJECT_NAME} INTERFACE planner_template)
 
 # include(CMakePackageConfigHelpers)
 # write_basic_package_version_file(
