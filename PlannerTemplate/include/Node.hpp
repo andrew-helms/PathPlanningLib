@@ -11,6 +11,8 @@ namespace PathPlanningLib
 {
     namespace PlannerTemplate
     {
+        template <class S, class A> class Connection;
+
         template <class S, class A> class Node
         {
         public:
@@ -39,20 +41,22 @@ namespace PathPlanningLib
             {
                 std::vector<std::shared_ptr<Connection<S, A>>> connections(actions.size());
 
-                std::for_each(actions.begin(), actions.end(), [](std::shared_ptr<const A> action) connections.push_back(std::make_shared<Connection>(action.Apply(m_State), action)));
+                std::for_each(actions.begin(), actions.end(), [connections, this](std::shared_ptr<const A> action)
+                {
+                    connections.push_back(std::make_shared<Connection>(action.Apply(m_State), action));
+                });
 
                 return connections;
             }
 
-            bool operator<(Node<S,A> const& lhs, Node<S,A> const& rhs)
+            bool operator<(Node<S,A> const& rhs)
             {
-                return lhs.GetCost() < rhs.GetCost();
+                return GetCost() < rhs.GetCost();
             }
 
         private:
             std::shared_ptr<const S> m_State;
-            std::vector<std::shared_ptr<Connection<S, A>>> m_Connections;
-            std::shared_ptr<Connection> m_Parent;
+            std::shared_ptr<Connection<S, A>> m_Parent;
             double m_Cost;
         };
     }

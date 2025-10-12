@@ -8,10 +8,12 @@ namespace PathPlanningLib
 {
     namespace PlannerTemplate
     {
+        template <class S, class> class Node;
+
         template <class S, class A> class Connection
         {
         public:
-            Connection(std::shared_ptr<Node<S, A>> node, std::share_ptr<const A> action)
+            Connection(std::shared_ptr<Node<S, A>> node, std::shared_ptr<const A> action)
             {
                 m_Node = node;
                 m_Action = action;
