@@ -11,7 +11,7 @@ namespace PathPlanningLib
         class Action2D : PathPlanningLib::PlannerTemplate::IAction
         {
         public:
-            Action2D(const int& moveX, const int& moveY, const double& cost);
+            Action2D(int moveX, int moveY, double cost);
             ~Action2D();
 
             int GetMoveX() const;
