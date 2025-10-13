@@ -5,7 +5,7 @@
 
 namespace PathPlanningLib
 {
-    namespace Test
+    namespace Tests
     {
         class State2D : PlannerTemplate::IState
         {
@@ -13,7 +13,7 @@ namespace PathPlanningLib
             State2D(int x, int y);
             ~State2D();
 
-            bool operator==(const PlannerTemplate::IState& other) override;
+            bool operator==(const PlannerTemplate::IState& other) const override;
             size_t CalculateHash() const override;
             int GetX() const;
             int GetY() const;
@@ -26,9 +26,9 @@ namespace PathPlanningLib
 }
 
 template<>
-struct std::hash<PathPlanningLib::Test::State2D>
+struct std::hash<PathPlanningLib::Tests::State2D>
 {
-    std::size_t operator()(const PathPlanningLib::Test::State2D& state)
+    std::size_t operator()(const PathPlanningLib::Tests::State2D& state)
     {
         return state.CalculateHash();
     }

@@ -4,7 +4,7 @@
 
 namespace PathPlanningLib
 {
-    namespace Test
+    namespace Tests
     {
         class DijkstrasTest
         {

@@ -2,7 +2,7 @@
 
 namespace PathPlanningLib
 {
-    namespace Test
+    namespace Tests
     {
         State2D::State2D() : IState()
         {

@@ -11,7 +11,7 @@
 
 namespace PathPlanningLib{
     namespace Implementations{
-        template <class S, class A> class Dijkstras : public PlannerTemplate::PathPlanner
+        template <class S, class A> class Dijkstras : public PlannerTemplate::PathPlanner<S, A>
         {
         public:
             Dijkstras(std::vector<std::shared_ptr<const A>> actions) : PlannerTemplate::PathPlanner<S, A>(actions)
@@ -19,7 +19,7 @@ namespace PathPlanningLib{
                 
             }
 
-            bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<const S, const A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) override
+            bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<const S, const A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) const override
             {
                 // setup
                 std::priority_queue<PlannerTemplate::Node<S, A>> nodeQueue;
@@ -32,7 +32,7 @@ namespace PathPlanningLib{
                 {
                     PlannerTemplate::Node<S,A> node = nodeQueue.top();
 
-                    std::vector<std::shared_ptr<PlannerTemplate::Connection<S,A>>> connections = node.GetConnections(m_Actions);
+                    std::vector<std::shared_ptr<PlannerTemplate::Connection<S,A>>> connections = node.GetConnections(this->m_Actions);
 
                     // loop through connections
                     for (auto connection = connections.begin(); connection != connections.end(); ++connection)
