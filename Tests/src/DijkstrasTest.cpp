@@ -11,12 +11,14 @@ namespace PathPlanningLib
     {
         void DijkstrasTest::TestDijkstras()
         {
-            std::vector<std::shared_ptr<Action2D>> actions{
-                std::make_shared<Action2D>(1, 0, 1.0),
-                std::make_shared<Action2D>(-1, 0, 1.0),
-                std::make_shared<Action2D>(0, 1, 1.0),
-                std::make_shared<Action2D>(0, -1, 1.0)
-            };            
+            std::vector<std::shared_ptr<const Action2D>> actions{
+                std::make_shared<const Action2D>(1, 0, 1.0),
+                std::make_shared<const Action2D>(-1, 0, 1.0),
+                std::make_shared<const Action2D>(0, 1, 1.0),
+                std::make_shared<const Action2D>(0, -1, 1.0)
+            };
+            
+            Implementations::Dijkstras<State2D, Action2D> planner(actions);
         }
     }
 }

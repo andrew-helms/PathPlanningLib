@@ -19,12 +19,27 @@ namespace PathPlanningLib
         {
             if (State2D const* p = dynamic_cast<State2D const*>(&other))
             {
-                return m_X == p->GetX() && m_Y == p->GetY();
+                return this == *p;
             }
             else
             {
                 return false;
             }
+        }
+
+        bool State2D::operator!=(const PlannerTemplate::IState& other) const
+        {
+            return !this == other;
+        }
+
+        bool State2D::operator==(const State2D& other) const
+        {
+            return m_X == other.GetX() && m_Y == other.GetY();
+        }
+
+        bool State2D::operator!=(const State2D& other) const
+        {
+            return !this == other;
         }
 
         size_t State2D::CalculateHash() const
@@ -40,6 +55,11 @@ namespace PathPlanningLib
         int State2D::GetY() const
         {
             return m_Y;
+        }
+
+        bool State2D::IsValid() const 
+        {
+            return true;
         }
     }
 }

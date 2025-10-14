@@ -43,7 +43,7 @@ namespace PathPlanningLib
 
                 std::for_each(actions.begin(), actions.end(), [connections, this](std::shared_ptr<const A> action)
                 {
-                    connections.push_back(std::make_shared<Connection>(action.Apply(m_State), action));
+                    connections.push_back(std::make_shared<Connection>(action->Apply(m_State), action));
                 });
 
                 return connections;

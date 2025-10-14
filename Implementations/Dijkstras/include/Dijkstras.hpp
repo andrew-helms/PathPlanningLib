@@ -23,11 +23,11 @@ namespace PathPlanningLib{
             {
                 // setup
                 std::priority_queue<PlannerTemplate::Node<S, A>> nodeQueue;
-                std::unordered_map<const S, PlannerTemplate::StateStatus> exploredStates;
+                std::unordered_map<S, PlannerTemplate::StateStatus> exploredStates;
 
-                nodeQueue.push(PlannerTemplate::Node<S, A>(start));
+                nodeQueue.push(PlannerTemplate::Node<S, A>(start, 0));
 
-                // loop through discovered nodes
+                // loop through discovered nodes    
                 for (; !nodeQueue.empty(); nodeQueue.pop())
                 {
                     PlannerTemplate::Node<S,A> node = nodeQueue.top();

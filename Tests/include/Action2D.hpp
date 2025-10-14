@@ -1,14 +1,15 @@
 #pragma once
 
-#include "IAction.hpp"
+#include <memory>
 
+#include "IAction.hpp"
 #include "State2D.hpp"
 
 namespace PathPlanningLib
 {
     namespace Tests
     {
-        class Action2D : PathPlanningLib::PlannerTemplate::IAction
+        class Action2D : public PathPlanningLib::PlannerTemplate::IAction
         {
         public:
             Action2D(int moveX, int moveY, double cost);
@@ -16,8 +17,8 @@ namespace PathPlanningLib
 
             int GetMoveX() const;
             int GetMoveY() const;
-            double GetCost() const override;
             std::shared_ptr<const PathPlanningLib::PlannerTemplate::IState> Apply(std::shared_ptr<const PathPlanningLib::PlannerTemplate::IState> state) const override;
+            std::shared_ptr<const State2D> Apply(std::shared_ptr<const State2D> state) const;
 
         private:
             int m_MoveX;

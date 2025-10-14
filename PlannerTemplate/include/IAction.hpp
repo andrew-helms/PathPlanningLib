@@ -8,10 +8,10 @@ namespace PathPlanningLib
         class IAction
         {
         public:
-            IAction(){}
-            virtual ~IAction(){}
+            IAction(){};
+            virtual ~IAction(){};
             virtual std::shared_ptr<const IState> Apply(std::shared_ptr<const IState> state) const = 0;
-            virtual double GetCost() const;
+            inline double GetCost() const { return m_Cost; };
 
         private:
             double m_Cost;
