@@ -23,7 +23,6 @@ namespace PathPlanningLib
         private:
             int m_MoveX;
             int m_MoveY;
-            double m_Cost;
         };
     }
 }

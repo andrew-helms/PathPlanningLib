@@ -61,6 +61,7 @@ namespace PathPlanningLib{
                     for (std::shared_ptr<PlannerTemplate::Connection<S, A>> connection : connections)
                     {
                         std::shared_ptr<const S> state = connection->GetState();
+
                         if (!state->IsValid())
                         {
                             continue;

@@ -1,7 +1,5 @@
 #include "State2D.hpp"
 
-#include <iostream>
-
 namespace PathPlanningLib
 {
     namespace Tests
@@ -36,8 +34,6 @@ namespace PathPlanningLib
 
         bool State2D::operator==(const State2D& other) const
         {
-            bool equals = m_X == other.GetX() && m_Y == other.GetY();
-
             return m_X == other.GetX() && m_Y == other.GetY();
         }
 

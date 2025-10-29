@@ -10,7 +10,7 @@ namespace PathPlanningLib
         Action2D::Action2D(int moveX, int moveY, double cost) : 
             m_MoveX(moveX),
             m_MoveY(moveY),
-            m_Cost(cost)
+            IAction(cost)
         {
 
         }
