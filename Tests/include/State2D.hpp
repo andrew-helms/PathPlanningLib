@@ -3,6 +3,8 @@
 #include <IState.hpp>
 #include <IAction.hpp>
 
+#include <unordered_set>
+
 namespace PathPlanningLib
 {
     namespace Tests
@@ -21,10 +23,13 @@ namespace PathPlanningLib
             int GetX() const;
             int GetY() const;
             bool IsValid() const override;
+            static void SetObstacles(std::unordered_set<State2D> obstacles);
 
         private:
             int m_X;
-            int m_Y;            
+            int m_Y;
+            
+            static std::unordered_set<State2D> s_Obstacles;
         };
     }
 }

@@ -1,4 +1,5 @@
 #include "State2D.hpp"
+#include <iostream>
 
 namespace PathPlanningLib
 {
@@ -59,7 +60,14 @@ namespace PathPlanningLib
 
         bool State2D::IsValid() const 
         {
-            return true;
+            return State2D::s_Obstacles.count(*this) == 0;
         }
+
+        void State2D::SetObstacles(std::unordered_set<State2D> obstacles)
+        {
+            State2D::s_Obstacles = obstacles;
+        }
+
+        std::unordered_set<State2D> State2D::s_Obstacles;
     }
 }

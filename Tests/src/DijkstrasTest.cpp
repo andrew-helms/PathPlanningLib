@@ -18,15 +18,27 @@ namespace PathPlanningLib
                 std::make_shared<const Action2D>(0, 1, 1.0),
                 std::make_shared<const Action2D>(0, -1, 1.0)
             };
+
+            State2D::SetObstacles(std::unordered_set<State2D>
+                ({
+                    State2D(1,3),
+                    State2D(0,3),
+                    State2D(-1,3)
+                }));
             
             Implementations::Dijkstras<State2D, Action2D> planner(actions);
             std::vector<std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>>> path;
 
-            planner.PlanPath(
+            bool success = planner.PlanPath(
                 &path,
                 std::make_shared<const State2D>(0, 0),
                 std::make_shared<const State2D>(0, 5)
             );
+
+            if (!success)
+            {
+                std::cout << "No path found" << std::endl;
+            }
 
             for (std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>> step : path)
             {
