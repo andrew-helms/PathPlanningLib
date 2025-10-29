@@ -31,7 +31,9 @@ namespace PathPlanningLib
             for (std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>> step : path)
             {
                 std::shared_ptr<const Action2D> action = step->GetAction();
-                std::cout << action->GetMoveX() << "," << action->GetMoveY() << std::endl;
+                std::shared_ptr<const State2D> state = step->GetState();
+                std::cout << "State:\t" << state->GetX() << "," << state->GetY() << std::endl;
+                std::cout << "Action:\t" << action->GetMoveX() << "," << action->GetMoveY() << std::endl;
             }
         }
     }

@@ -39,7 +39,8 @@ namespace PathPlanningLib
 
             std::vector<std::shared_ptr<Connection<S, A>>> GetConnections(std::vector<std::shared_ptr<const A>> actions) const
             {
-                std::vector<std::shared_ptr<Connection<S, A>>> connections(actions.size());
+                std::vector<std::shared_ptr<Connection<S, A>>> connections;
+                connections.reserve(actions.size());
                 
                 for (const std::shared_ptr<const A>& action : actions)
                 {
@@ -81,6 +82,11 @@ namespace PathPlanningLib
             bool operator<(const Node<S,A>& rhs) const
             {
                 return GetCost() < rhs.GetCost();
+            }
+
+            bool operator>(const Node<S,A>& rhs) const
+            {
+                return GetCost() > rhs.GetCost();
             }
 
         private:

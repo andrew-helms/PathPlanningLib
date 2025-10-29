@@ -37,7 +37,6 @@ namespace PathPlanningLib
         bool State2D::operator==(const State2D& other) const
         {
             bool equals = m_X == other.GetX() && m_Y == other.GetY();
-            std::cout << m_X << "," << m_Y << "|" << other.GetX() << "," << other.GetY() << " " << equals << std::endl;
 
             return m_X == other.GetX() && m_Y == other.GetY();
         }

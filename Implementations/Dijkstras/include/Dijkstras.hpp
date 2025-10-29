@@ -24,7 +24,7 @@ namespace PathPlanningLib{
             bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) const override
             {
                 // setup
-                std::priority_queue<PlannerTemplate::Node<S, A>> nodeQueue;
+                std::priority_queue<PlannerTemplate::Node<S, A>, std::vector<PlannerTemplate::Node<S, A>>, std::greater<PlannerTemplate::Node<S, A>>> nodeQueue;
                 std::unordered_map<S, PlannerTemplate::StateStatus> exploredStates;
                 std::unordered_map<S, PlannerTemplate::Node<S, A>> nodeMap;
 
@@ -55,22 +55,20 @@ namespace PathPlanningLib{
                         return true;
                     }
 
-                    std::cout << "Getting connections" << std::endl;
-
                     std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> connections = node.GetConnections(this->m_Actions);
-
-                    std::cout << "Iterating over connections" << std::endl;
 
                     // loop through connections
                     for (std::shared_ptr<PlannerTemplate::Connection<S, A>> connection : connections)
                     {
-                        std::cout << "Getting connection state" << std::endl;
                         std::shared_ptr<const S> state = connection->GetState();
-                        std::cout << "Checking state status" << std::endl;
+                        if (!state->IsValid())
+                        {
+                            continue;
+                        }
+
                         //check if connection has been found before
                         if (exploredStates.count(*state) == 0)
                         {
-                            std::cout << "Unexplored" << std::endl;
                             PlannerTemplate::Node<S, A> connectedNode(state, node, connection->GetAction());
                             exploredStates.emplace(*state, PlannerTemplate::StateStatus::Exploring);
                             nodeMap.emplace(*state, connectedNode);
@@ -78,12 +76,10 @@ namespace PathPlanningLib{
                         }
                         else if (exploredStates[*connection->GetState()] == PlannerTemplate::StateStatus::Exploring)
                         {
-                            std::cout << "Exploring" << std::endl;
                             nodeMap.find(*state)->second.UpdateParent(node, connection->GetAction());
                         }
                         else
                         {
-                            std::cout << "Solved" << std::endl;
                         }
                     }
 
