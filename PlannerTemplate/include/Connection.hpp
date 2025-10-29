@@ -2,35 +2,34 @@
 
 #include <memory>
 
-#include "Node.hpp"
-
 namespace PathPlanningLib
 {
     namespace PlannerTemplate
     {
-        template <class S, class> class Node;
-
         template <class S, class A> class Connection
         {
         public:
-            Connection(std::shared_ptr<Node<S, A>> node, std::shared_ptr<const A> action)
+            Connection(const std::shared_ptr<const S>& state, const std::shared_ptr<const A>& action) : m_State(state), m_Action(action)
             {
-                m_Node = node;
-                m_Action = action;
             }
             
-            double GetCost() 
+            double GetCost() const
             {
-                return m_Action->GetCost() * GetState()->GetCostMultiplier();
+                return m_Action->GetCost() * m_State->GetCostMultiplier();
             }
 
-            std::shared_ptr<const S> GetState()
+            std::shared_ptr<const S> GetState() const
             {
-                return m_Node->GetState();
+                return m_State;
+            }
+
+            std::shared_ptr<const A> GetAction() const
+            {
+                return m_Action;
             }
 
         private:
-            std::shared_ptr<Node<S, A>> m_Node;
+            std::shared_ptr<const S> m_State;
             std::shared_ptr<const A> m_Action;
 
         };

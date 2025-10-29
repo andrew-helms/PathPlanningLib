@@ -11,15 +11,15 @@ namespace PathPlanningLib
 {
     namespace PlannerTemplate
     {
-        template <class S, class A> class Connection;
-
         template <class S, class A> class Node
         {
         public:
-            Node(std::shared_ptr<const S> state, double cost)
+            Node(const std::shared_ptr<const S>& state) : m_State(state), m_Cost(0), m_Parent(nullptr) { }
+
+            Node(const std::shared_ptr<const S>& state, Node<S, A> &parent, const std::shared_ptr<const A>& action) : m_State(state)
             {
-                m_State = state;
-                m_Cost = cost;
+                m_Parent = std::make_shared<Connection<S, A>>(parent.GetState(), action);
+                m_Cost = parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
             }
 
             ~Node()
@@ -27,29 +27,58 @@ namespace PathPlanningLib
 
             }
 
-            double GetCost()
+            double GetCost() const
             {
                 return m_Cost;
             }
 
-            std::shared_ptr<const S> GetState()
+            std::shared_ptr<const S> GetState() const
             {
                 return m_State;
             }
 
-            std::vector<std::shared_ptr<Connection<S, A>>> GetConnections(std::vector<std::shared_ptr<const A>> actions)
+            std::vector<std::shared_ptr<Connection<S, A>>> GetConnections(std::vector<std::shared_ptr<const A>> actions) const
             {
                 std::vector<std::shared_ptr<Connection<S, A>>> connections(actions.size());
-
-                std::for_each(actions.begin(), actions.end(), [connections, this](std::shared_ptr<const A> action)
+                
+                for (const std::shared_ptr<const A>& action : actions)
                 {
-                    connections.push_back(std::make_shared<Connection>(action->Apply(m_State), action));
-                });
+                    connections.push_back(std::make_shared<Connection<S, A>>
+                    (
+                        action->Apply(m_State),
+                        action
+                    ));
+                }
+
+                // std::for_each(actions.begin(), actions.end(), [connections, this](std::shared_ptr<const A> action)
+                // {
+                //     connections.push_back(std::make_shared<Connection<S, A>>
+                //     (
+                //         action->Apply(m_State),
+                //         action
+                //     ));
+                // });
 
                 return connections;
             }
 
-            bool operator<(Node<S,A> const& rhs)
+            std::shared_ptr<Connection<S, A>> GetParent() const
+            {
+                return m_Parent;
+            }
+
+            void UpdateParent(Node<S, A> &parent, const std::shared_ptr<const A>& action)
+            {
+                double newCost = parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
+
+                if (newCost < m_Cost)
+                {
+                    m_Parent = std::make_shared<Connection<S, A>>(parent.GetState(), action);
+                    m_Cost = newCost;
+                }
+            }
+
+            bool operator<(const Node<S,A>& rhs) const
             {
                 return GetCost() < rhs.GetCost();
             }

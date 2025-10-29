@@ -1,5 +1,6 @@
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "DijkstrasTest.hpp"
 #include "Action2D.hpp"
@@ -19,6 +20,19 @@ namespace PathPlanningLib
             };
             
             Implementations::Dijkstras<State2D, Action2D> planner(actions);
+            std::vector<std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>>> path;
+
+            planner.PlanPath(
+                &path,
+                std::make_shared<const State2D>(0, 0),
+                std::make_shared<const State2D>(0, 5)
+            );
+
+            for (std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>> step : path)
+            {
+                std::shared_ptr<const Action2D> action = step->GetAction();
+                std::cout << action->GetMoveX() << "," << action->GetMoveY() << std::endl;
+            }
         }
     }
 }

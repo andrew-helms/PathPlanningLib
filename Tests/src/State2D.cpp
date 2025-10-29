@@ -1,5 +1,7 @@
 #include "State2D.hpp"
 
+#include <iostream>
+
 namespace PathPlanningLib
 {
     namespace Tests
@@ -19,7 +21,7 @@ namespace PathPlanningLib
         {
             if (State2D const* p = dynamic_cast<State2D const*>(&other))
             {
-                return this == *p;
+                return *this == *p;
             }
             else
             {
@@ -29,17 +31,20 @@ namespace PathPlanningLib
 
         bool State2D::operator!=(const PlannerTemplate::IState& other) const
         {
-            return !this == other;
+            return !(*this == other);
         }
 
         bool State2D::operator==(const State2D& other) const
         {
+            bool equals = m_X == other.GetX() && m_Y == other.GetY();
+            std::cout << m_X << "," << m_Y << "|" << other.GetX() << "," << other.GetY() << " " << equals << std::endl;
+
             return m_X == other.GetX() && m_Y == other.GetY();
         }
 
         bool State2D::operator!=(const State2D& other) const
         {
-            return !this == other;
+            return !(*this == other);
         }
 
         size_t State2D::CalculateHash() const
