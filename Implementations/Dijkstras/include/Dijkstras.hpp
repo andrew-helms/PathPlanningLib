@@ -21,14 +21,14 @@ namespace PathPlanningLib{
                 
             }
 
-            bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) const override
+            virtual bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) override
             {
                 // setup
                 std::priority_queue<PlannerTemplate::Node<S, A>, std::vector<PlannerTemplate::Node<S, A>>, std::greater<PlannerTemplate::Node<S, A>>> nodeQueue;
                 std::unordered_map<S, PlannerTemplate::StateStatus> exploredStates;
                 std::unordered_map<S, PlannerTemplate::Node<S, A>> nodeMap;
 
-                PlannerTemplate::Node<S, A> startNode(start);
+                PlannerTemplate::Node<S, A> startNode(start, this);
                 nodeQueue.push(startNode);
                 nodeMap.emplace(*start, startNode);
 
@@ -70,7 +70,7 @@ namespace PathPlanningLib{
                         //check if connection has been found before
                         if (exploredStates.count(*state) == 0)
                         {
-                            PlannerTemplate::Node<S, A> connectedNode(state, node, connection->GetAction());
+                            PlannerTemplate::Node<S, A> connectedNode(state, node, connection->GetAction(), this);
                             exploredStates.emplace(*state, PlannerTemplate::StateStatus::Exploring);
                             nodeMap.emplace(*state, connectedNode);
                             nodeQueue.push(connectedNode);
@@ -87,6 +87,11 @@ namespace PathPlanningLib{
                 }
 
                 return false;
+            }
+
+            virtual float CalculateCost(PlannerTemplate::Node<S, A>& parent, const std::shared_ptr<const S>& state, const std::shared_ptr<const A>& action) const override
+            {
+                return parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
             }
 
             // bool override PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal, const std::chrono::duration<float>& timeout)

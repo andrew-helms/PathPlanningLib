@@ -6,20 +6,23 @@
 #include <vector>
 
 #include "Connection.hpp"
+#include "PathPlanner.hpp"
 
 namespace PathPlanningLib
 {
     namespace PlannerTemplate
     {
+        template <class S, class A> class PathPlanner;
+
         template <class S, class A> class Node
         {
         public:
-            Node(const std::shared_ptr<const S>& state) : m_State(state), m_Cost(0), m_Parent(nullptr) { }
+            Node(const std::shared_ptr<const S>& state, const PathPlanner<S, A>* planner): m_State(state), m_Cost(0), m_Parent(nullptr), m_Planner(planner) { }
 
-            Node(const std::shared_ptr<const S>& state, Node<S, A> &parent, const std::shared_ptr<const A>& action) : m_State(state)
+            Node(const std::shared_ptr<const S>& state, Node<S, A> &parent, const std::shared_ptr<const A>& action, const PathPlanner<S, A>* planner) : m_State(state), m_Planner(planner)
             {
                 m_Parent = std::make_shared<Connection<S, A>>(parent.GetState(), action);
-                m_Cost = parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
+                m_Cost = m_Planner->CalculateCost(parent, state, action);
             }
 
             ~Node()
@@ -70,7 +73,7 @@ namespace PathPlanningLib
 
             void UpdateParent(Node<S, A> &parent, const std::shared_ptr<const A>& action)
             {
-                double newCost = parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
+                double newCost = m_Planner->CalculateCost(parent, m_State, action);
 
                 if (newCost < m_Cost)
                 {
@@ -92,6 +95,7 @@ namespace PathPlanningLib
         private:
             std::shared_ptr<const S> m_State;
             std::shared_ptr<Connection<S, A>> m_Parent;
+            const PathPlanner<S, A>* m_Planner;
             double m_Cost;
         };
     }

@@ -24,6 +24,7 @@ namespace PathPlanningLib
             int GetY() const;
             bool IsValid() const override;
             static void SetObstacles(std::unordered_set<State2D> obstacles);
+            float CalculateHeuristic(const State2D& other) const;
 
         private:
             int m_X;

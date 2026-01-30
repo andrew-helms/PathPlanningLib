@@ -19,9 +19,14 @@ class path_planning_libRecipe(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
 
+    # generators = "CMakeDeps"
+
     # Sources are located in the same place as this recipe, copy them to the recipe
     # This is wrong, needs build and install the outputs of PlannerTemplate and Implementations libraries
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
+
+    def requirements(self):
+        self.requires("imgui/1.92.5-docking")
 
     def config_options(self):
         if self.settings.os == "Windows":

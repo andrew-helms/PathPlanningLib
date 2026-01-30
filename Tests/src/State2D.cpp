@@ -1,5 +1,6 @@
 #include "State2D.hpp"
 #include <iostream>
+#include <math.h>
 
 namespace PathPlanningLib
 {
@@ -66,6 +67,11 @@ namespace PathPlanningLib
         void State2D::SetObstacles(std::unordered_set<State2D> obstacles)
         {
             State2D::s_Obstacles = obstacles;
+        }
+
+        float State2D::CalculateHeuristic(const State2D& other) const
+        {
+            return sqrt(pow(m_X - other.GetX(), 2) + pow(m_Y - other.GetY(), 2));
         }
 
         std::unordered_set<State2D> State2D::s_Obstacles;

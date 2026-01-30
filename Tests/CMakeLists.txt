@@ -1,7 +1,8 @@
 project(tests)
 
-add_executable(${PROJECT_NAME} src/DijkstrasTest.cpp src/Action2D.cpp src/State2D.cpp)
+add_executable(${PROJECT_NAME} src/tests.cpp src/DijkstrasTest.cpp src/AStarTest.cpp src/Action2D.cpp src/State2D.cpp)
 
+target_link_libraries(${PROJECT_NAME} astar)
 target_link_libraries(${PROJECT_NAME} dijkstras)
 target_include_directories(${PROJECT_NAME} PUBLIC 
                           "${PROJECT_BINARY_DIR}"

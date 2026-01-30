@@ -1,1 +1,2 @@
 add_subdirectory(Dijkstras)
+add_subdirectory(AStar)

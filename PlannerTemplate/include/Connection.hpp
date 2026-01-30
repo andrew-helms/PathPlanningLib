@@ -31,7 +31,6 @@ namespace PathPlanningLib
         private:
             std::shared_ptr<const S> m_State;
             std::shared_ptr<const A> m_Action;
-
         };
     }
 }

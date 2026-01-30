@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "DijkstrasTest.hpp"
+#include "AStarTest.hpp"
 #include "Action2D.hpp"
 #include "State2D.hpp"
 
@@ -10,9 +10,9 @@ namespace PathPlanningLib
 {
     namespace Tests
     {
-        void DijkstrasTest::TestDijkstras()
+        void AStarTest::TestAStar()
         {
-            std::cout << "Dijkstras Test:" << std::endl;
+            std::cout << "AStar Test:" << std::endl;
             std::vector<std::shared_ptr<const Action2D>> actions{
                 std::make_shared<const Action2D>(1, 0, 1.0),
                 std::make_shared<const Action2D>(-1, 0, 1.0),
@@ -27,13 +27,13 @@ namespace PathPlanningLib
                     State2D(-1,3)
                 }));
             
-            Implementations::Dijkstras<State2D, Action2D> planner(actions);
+            Implementations::AStar<State2D, Action2D> planner(actions);
             std::vector<std::shared_ptr<PlannerTemplate::Connection<State2D, Action2D>>> path;
 
             bool success = planner.PlanPath(
                 &path,
                 std::make_shared<const State2D>(0, 0),
-                std::make_shared<const State2D>(0, 5)
+                std::make_shared<const State2D>(0, 7)
             );
 
             if (!success)
