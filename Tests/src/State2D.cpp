@@ -17,7 +17,7 @@ namespace PathPlanningLib
 
         }
 
-        bool State2D::operator==(const PlannerTemplate::IState& other) const
+        bool State2D::operator==(const IState& other) const
         {
             if (State2D const* p = dynamic_cast<State2D const*>(&other))
             {
@@ -29,7 +29,7 @@ namespace PathPlanningLib
             }
         }
 
-        bool State2D::operator!=(const PlannerTemplate::IState& other) const
+        bool State2D::operator!=(const IState& other) const
         {
             return !(*this == other);
         }
@@ -59,14 +59,26 @@ namespace PathPlanningLib
             return m_Y;
         }
 
-        bool State2D::IsValid() const 
+        std::vector<std::pair<std::shared_ptr<const IState&>, double>> State2D::GetConnections() const
         {
-            return State2D::s_Obstacles.count(*this) == 0;
+            std::vector<std::pair<std::shared_ptr<const IState&>, double>> connections(s_Actions.size());
+
+            for (Action2D action : s_Actions)
+            {
+                connections.push_back(std::pair<std::shared_ptr<const IState&>, double>(action.Apply(*this), action.GetCost()));
+            }
+
+            return connections;
         }
 
         void State2D::SetObstacles(std::unordered_set<State2D> obstacles)
         {
             State2D::s_Obstacles = obstacles;
+        }
+
+        void State2D::SetActions(std::unordered_set<Action2D> actions)
+        {
+            State2D::s_Actions = actions;
         }
 
         float State2D::CalculateHeuristic(const State2D& other) const

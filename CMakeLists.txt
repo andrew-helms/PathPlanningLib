@@ -4,8 +4,9 @@ project(path_planning_lib CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(PlannerTemplate)
-add_subdirectory(Implementations)
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
+
 add_subdirectory(Tests)
 
 #install(TARGETS path_planning_lib)

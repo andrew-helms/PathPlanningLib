@@ -20,23 +20,23 @@ namespace PathPlanningLib
 
         }
 
-        std::shared_ptr<const PathPlanningLib::PlannerTemplate::IState> Action2D::Apply(std::shared_ptr<const PathPlanningLib::PlannerTemplate::IState> state) const
+        std::shared_ptr<const IState> Action2D::Apply(const IState& state) const
         {
-            auto state2d = std::dynamic_pointer_cast<const State2D>(state);
-            if (state2d)
+            const State2D& state2d = (const State2D&)state;
+            //if (state2d)
             {
                 return Apply(state2d);
             }
-            else
+            //else
             {
                 std::cout << "Not an expected type" << std::endl;
                 return nullptr;
             }
         }
 
-        std::shared_ptr<const State2D> Action2D::Apply(std::shared_ptr<const State2D> state) const
+        std::shared_ptr<const State2D> Action2D::Apply(const State2D& state) const
         {
-            return std::make_shared<const State2D>(state->GetX() + m_MoveX, state->GetY() + m_MoveY);
+            return std::make_shared<const State2D>(state.GetX() + m_MoveX, state.GetY() + m_MoveY);
         }
 
         int Action2D::GetMoveX() const
