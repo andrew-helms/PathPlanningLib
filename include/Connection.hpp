@@ -4,30 +4,30 @@
 
 namespace PathPlanningLib
 {
-    template <class S, class A> class Connection
+    template <class V, class E> class Connection
     {
     public:
-        Connection(const std::shared_ptr<const S>& state, const std::shared_ptr<const A>& action) : m_State(state), m_Action(action)
+        Connection(const std::shared_ptr<const V>& vertex, const std::shared_ptr<const E>& edge) : m_VertexTo(vertex), m_Edge(edge)
         {
         }
         
         double GetCost() const
         {
-            return m_Action->GetCost() * m_State->GetCostMultiplier();
+            return m_Edge->GetCost() * m_VertexTo->GetCostMultiplier();
         }
 
-        std::shared_ptr<const S> GetState() const
+        std::shared_ptr<const V> GetVertex() const
         {
-            return m_State;
+            return m_VertexTo;
         }
 
-        std::shared_ptr<const A> GetAction() const
+        std::shared_ptr<const E> GetEdge() const
         {
-            return m_Action;
+            return m_Edge;
         }
 
     private:
-        std::shared_ptr<const S> m_State;
-        std::shared_ptr<const A> m_Action;
+        std::shared_ptr<const V> m_VertexTo;
+        std::shared_ptr<const E> m_Edge;
     };    
 }

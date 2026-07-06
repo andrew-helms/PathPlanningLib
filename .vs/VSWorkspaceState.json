@@ -1,0 +1,12 @@
+{
+  "OutputFoldersPerTargetSystem": {
+    "Local Machine": [
+      "build\\build"
+    ]
+  },
+  "ExpandedNodes": [
+    ""
+  ],
+  "SelectedNode": "\\path_planning_lib.sln",
+  "PreviewInSolutionExplorer": false
+}

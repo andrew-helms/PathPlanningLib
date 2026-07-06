@@ -6,10 +6,8 @@ namespace PathPlanningLib
 {
     namespace Tests
     {
-        State2D::State2D(int x, int y) : IState()
+        State2D::State2D(int x, int y) : m_X(x), m_Y(y), m_CostMultiplier(1)/* : IVertex()*/
         {
-            m_X = x;
-            m_Y = y;
         }
 
         State2D::~State2D()
@@ -17,22 +15,22 @@ namespace PathPlanningLib
 
         }
 
-        bool State2D::operator==(const IState& other) const
-        {
-            if (State2D const* p = dynamic_cast<State2D const*>(&other))
-            {
-                return *this == *p;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //bool State2D::operator==(const IVertex& other) const
+        //{
+        //    if (State2D const* p = dynamic_cast<State2D const*>(&other))
+        //    {
+        //        return *this == *p;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        bool State2D::operator!=(const IState& other) const
-        {
-            return !(*this == other);
-        }
+        //bool State2D::operator!=(const IVertex& other) const
+        //{
+        //    return !(*this == other);
+        //}
 
         bool State2D::operator==(const State2D& other) const
         {
@@ -59,13 +57,18 @@ namespace PathPlanningLib
             return m_Y;
         }
 
-        std::vector<std::pair<std::shared_ptr<const IState&>, double>> State2D::GetConnections() const
+        std::vector<std::pair<std::shared_ptr<const Action2D>, std::shared_ptr<const State2D>>> State2D::GetEdges() const
         {
-            std::vector<std::pair<std::shared_ptr<const IState&>, double>> connections(s_Actions.size());
+            std::vector<std::pair<std::shared_ptr<const Action2D>, std::shared_ptr<const State2D>>> connections;
+            connections.reserve(s_Actions.size());
 
-            for (Action2D action : s_Actions)
+            for (std::shared_ptr<Action2D> action : s_Actions)
             {
-                connections.push_back(std::pair<std::shared_ptr<const IState&>, double>(action.Apply(*this), action.GetCost()));
+                std::shared_ptr<const State2D> state = action->Apply(*this);
+                if (!s_Obstacles.contains(*state))
+                {
+                    connections.push_back(std::pair(action, state));
+                }
             }
 
             return connections;
@@ -76,7 +79,7 @@ namespace PathPlanningLib
             State2D::s_Obstacles = obstacles;
         }
 
-        void State2D::SetActions(std::unordered_set<Action2D> actions)
+        void State2D::SetActions(std::vector<std::shared_ptr<Action2D>> actions)
         {
             State2D::s_Actions = actions;
         }
@@ -87,5 +90,6 @@ namespace PathPlanningLib
         }
 
         std::unordered_set<State2D> State2D::s_Obstacles;
+        std::vector<std::shared_ptr<Action2D>> State2D::s_Actions;
     }
 }

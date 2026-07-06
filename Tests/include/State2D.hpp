@@ -1,7 +1,6 @@
 #pragma once
 
-#include <IState.hpp>
-#include <IAction.hpp>
+#include <IVertex.hpp>
 
 #include "Action2D.hpp"
 
@@ -10,32 +9,36 @@
 namespace PathPlanningLib
 {
     namespace Tests
-    {   //template <class A>
-        class State2D : public IState
+    {   
+        class Action2D;
+
+        class State2D// : public IVertex
         {
         public:
             State2D(int x, int y);
             ~State2D();
 
-            bool operator==(const IState& other) const override;
-            bool operator!=(const IState& other) const override;
+            //bool operator==(const IVertex& other) const override;
+            //bool operator!=(const IVertex& other) const override;
             bool operator==(const State2D& other) const;
             bool operator!=(const State2D& other) const;
-            size_t CalculateHash() const override;
+            size_t CalculateHash() const ;
             int GetX() const;
             int GetY() const;
-            std::vector<std::pair<std::shared_ptr<const IState&>, double>> GetConnections() const override;
+            std::vector<std::pair<std::shared_ptr<const Action2D>, std::shared_ptr<const State2D>>> GetEdges() const;
             float CalculateHeuristic(const State2D& other) const;
+            inline double GetCostMultiplier() const { return m_CostMultiplier; }
 
             static void SetObstacles(std::unordered_set<State2D> obstacles);
-            static void SetActions(std::unordered_set<Action2D> actions);
+            static void SetActions(std::vector<std::shared_ptr<Action2D>> actions);
 
         private:
             int m_X;
             int m_Y;
             
             static std::unordered_set<State2D> s_Obstacles;
-            static std::unordered_set<Action2D> s_Actions;
+            static std::vector<std::shared_ptr<Action2D>> s_Actions;
+            double m_CostMultiplier;
         };
     }
 }

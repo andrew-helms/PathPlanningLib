@@ -10,7 +10,7 @@ namespace PathPlanningLib
         Action2D::Action2D(int moveX, int moveY, double cost) : 
             m_MoveX(moveX),
             m_MoveY(moveY),
-            IAction(cost)
+            m_Cost(cost)
         {
 
         }
@@ -20,19 +20,19 @@ namespace PathPlanningLib
 
         }
 
-        std::shared_ptr<const IState> Action2D::Apply(const IState& state) const
-        {
-            const State2D& state2d = (const State2D&)state;
-            //if (state2d)
-            {
-                return Apply(state2d);
-            }
-            //else
-            {
-                std::cout << "Not an expected type" << std::endl;
-                return nullptr;
-            }
-        }
+        //std::shared_ptr<const IVertex> Action2D::Apply(const IVertex& state) const
+        //{
+        //    const State2D& state2d = (const State2D&)state;
+        //    //if (state2d)
+        //    {
+        //        return Apply(state2d);
+        //    }
+        //    //else
+        //    {
+        //        std::cout << "Not an expected type" << std::endl;
+        //        return nullptr;
+        //    }
+        //}
 
         std::shared_ptr<const State2D> Action2D::Apply(const State2D& state) const
         {

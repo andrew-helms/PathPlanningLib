@@ -2,14 +2,16 @@
 
 #include <memory>
 
-#include "IAction.hpp"
+#include "IEdge.hpp"
 #include "State2D.hpp"
 
 namespace PathPlanningLib
 {
     namespace Tests
     {
-        class Action2D : public IAction
+        class State2D;
+
+        class Action2D /*: public IEdge*/
         {
         public:
             Action2D(int moveX, int moveY, double cost);
@@ -17,12 +19,14 @@ namespace PathPlanningLib
 
             int GetMoveX() const;
             int GetMoveY() const;
-            std::shared_ptr<const IState> Apply(const IState& state) const override;
+            //std::shared_ptr<const IVertex> Apply(const IVertex& state) const override;
             std::shared_ptr<const State2D> Apply(const State2D& state) const;
+            double GetCost() const { return m_Cost; };
 
         private:
             int m_MoveX;
             int m_MoveY;
+            double m_Cost;
         };
     }
 }

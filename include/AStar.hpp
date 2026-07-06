@@ -1,28 +1,28 @@
 #include "Dijkstras.hpp"
 
 namespace PathPlanningLib{
-    template <class S, class A> class AStar : public Dijkstras<S, A>
+    template <class V, class E> class AStar : public Dijkstras<V, E>
     {
     public:
-        AStar(std::vector<std::shared_ptr<const A>> actions) : Dijkstras<S, A>(actions)
+        AStar() : Dijkstras<V, E>()
         {
             
         }
         
-        bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) override
+        bool PlanPath(std::vector<std::shared_ptr<Connection<V, E>>> *path, std::shared_ptr<const V> start, std::shared_ptr<const V> goal) override
         {
             m_Goal = goal;
 
-            return Dijkstras<S, A>::PlanPath(path, start, goal);
+            return Dijkstras<V, E>::PlanPath(path, start, goal);
         }
 
-        float CalculateCost(PlannerTemplate::Node<S, A>& parent, const std::shared_ptr<const S>& state, const std::shared_ptr<const A>& action) const override
+        float CalculateCost(Node<V, E>& parent, const std::shared_ptr<const V>& vertex, const std::shared_ptr<const E>& edge) const override
         {
-            return parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost() + state->CalculateHeuristic(*m_Goal);
+            return parent.GetCost() + parent.GetVertex()->GetCostMultiplier() * edge->GetCost() + vertex->CalculateHeuristic(*m_Goal);
         }
 
     private:
-        std::shared_ptr<const S> m_Goal;
+        std::shared_ptr<const V> m_Goal;
     };
     
 }

@@ -10,17 +10,17 @@
 
 namespace PathPlanningLib
 {
-    template <class S, class A> class PathPlanner;
+    template <class V, class E> class PathPlanner;
 
-    template <class S, class A> class Node
+    template <class V, class E> class Node
     {
     public:
-        Node(const std::shared_ptr<const S>& state, const PathPlanner<S, A>* planner): m_State(state), m_Cost(0), m_Parent(nullptr), m_Planner(planner) { }
+        Node(const std::shared_ptr<const V>& vertex, const PathPlanner<V, E>* planner): m_Vertex(vertex), m_Cost(0), m_Parent(nullptr), m_Planner(planner) { }
 
-        Node(const std::shared_ptr<const S>& state, Node<S, A> &parent, const std::shared_ptr<const A>& action, const PathPlanner<S, A>* planner) : m_State(state), m_Planner(planner)
+        Node(const std::shared_ptr<const V>& vertex, Node<V, E> &parent, const std::shared_ptr<const E>& edge, const PathPlanner<V, E>* planner) : m_Vertex(vertex), m_Planner(planner)
         {
-            m_Parent = std::make_shared<Connection<S, A>>(parent.GetState(), action);
-            m_Cost = m_Planner->CalculateCost(parent, state, action);
+            m_Parent = std::make_shared<Connection<V, E>>(parent.GetVertex(), edge);
+            m_Cost = m_Planner->CalculateCost(parent, vertex, edge);
         }
 
         ~Node()
@@ -33,67 +33,61 @@ namespace PathPlanningLib
             return m_Cost;
         }
 
-        std::shared_ptr<const S> GetState() const
+        std::shared_ptr<const V> GetVertex() const
         {
-            return m_State;
+            return m_Vertex;
         }
 
-        std::vector<std::shared_ptr<Connection<S, A>>> GetConnections(std::vector<std::shared_ptr<const A>> actions) const
+        std::vector<std::shared_ptr<Connection<const V, const E>>> GetConnections() const
         {
-            std::vector<std::shared_ptr<Connection<S, A>>> connections;
-            connections.reserve(actions.size());
-            
-            for (const std::shared_ptr<const A>& action : actions)
-            {
-                connections.push_back(std::make_shared<Connection<S, A>>
-                (
-                    action->Apply(m_State),
-                    action
-                ));
-            }
+            std::vector<std::shared_ptr<Connection<const V, const E>>> connections;
 
-            // std::for_each(actions.begin(), actions.end(), [connections, this](std::shared_ptr<const A> action)
-            // {
-            //     connections.push_back(std::make_shared<Connection<S, A>>
-            //     (
-            //         action->Apply(m_State),
-            //         action
-            //     ));
-            // });
+            std::vector<std::pair<std::shared_ptr<const E>, std::shared_ptr<const V>>> edges = m_Vertex->GetEdges();
+
+            connections.reserve(edges.size());
+
+            std::for_each(edges.begin(), edges.end(), [&connections](std::pair<std::shared_ptr<const E>, std::shared_ptr<const V>> edge) mutable
+            {
+                connections.push_back(std::make_shared<Connection<const V, const E>>
+                (
+                    edge.second,
+                    edge.first
+                ));
+            });
 
             return connections;
         }
 
-        std::shared_ptr<Connection<S, A>> GetParent() const
+        std::shared_ptr<Connection<V, E>> GetParent() const
         {
             return m_Parent;
         }
 
-        void UpdateParent(Node<S, A> &parent, const std::shared_ptr<const A>& action)
+        void UpdateParent(Node<V, E> &parent, const std::shared_ptr<const E>& edge)
         {
-            double newCost = m_Planner->CalculateCost(parent, m_State, action);
+            double newCost = m_Planner->CalculateCost(parent, m_Vertex, edge);
 
             if (newCost < m_Cost)
             {
-                m_Parent = std::make_shared<Connection<S, A>>(parent.GetState(), action);
+                m_Parent = std::make_shared<Connection<V, E>>(parent.GetVertex(), edge);
                 m_Cost = newCost;
             }
         }
 
-        bool operator<(const Node<S,A>& rhs) const
+        bool operator<(const Node<V, E>& rhs) const
         {
             return GetCost() < rhs.GetCost();
         }
 
-        bool operator>(const Node<S,A>& rhs) const
+        bool operator>(const Node<V, E>& rhs) const
         {
             return GetCost() > rhs.GetCost();
         }
 
     private:
-        std::shared_ptr<const S> m_State;
-        std::shared_ptr<Connection<S, A>> m_Parent;
-        const PathPlanner<S, A>* m_Planner;
+        std::shared_ptr<const V> m_Vertex;
+        std::shared_ptr<Connection<V, E>> m_Parent;
+        const PathPlanner<V, E>* m_Planner;
         double m_Cost;
     };
 }

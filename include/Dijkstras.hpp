@@ -10,44 +10,45 @@
 #include "Node.hpp"
 #include "Connection.hpp"
 #include "StateStatus.hpp"
+#include "State2D.hpp"
 
 namespace PathPlanningLib{
-    template <class S, class A>
-    class Dijkstras : public PlannerTemplate::PathPlanner<S, A>
+    template <class V, class E>
+    class Dijkstras : public PathPlanner<V, E>
     {
     public:
-        Dijkstras(std::vector<std::shared_ptr<const A>> actions) : PlannerTemplate::PathPlanner<S, A>(actions)
+        Dijkstras() : PathPlanner<V, E>()
         {
             
         }
 
-        virtual bool PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal) override
+        virtual bool PlanPath(std::vector<std::shared_ptr<Connection<V, E>>> *path, std::shared_ptr<const V> start, std::shared_ptr<const V> goal) override
         {
             // setup
-            std::priority_queue<PlannerTemplate::Node<S, A>, std::vector<PlannerTemplate::Node<S, A>>, std::greater<PlannerTemplate::Node<S, A>>> nodeQueue;
-            std::unordered_map<S, PlannerTemplate::StateStatus> exploredStates;
-            std::unordered_map<S, PlannerTemplate::Node<S, A>> nodeMap;
+            std::priority_queue<Node<V, E>, std::vector<Node<V, E>>, std::greater<Node<V, E>>> nodeQueue;
+            std::unordered_map<V, StateStatus> exploredVertices;
+            std::unordered_map<V, Node<V, E>> nodeMap;
 
-            PlannerTemplate::Node<S, A> startNode(start, this);
+            Node<V, E> startNode(start, this);
             nodeQueue.push(startNode);
             nodeMap.emplace(*start, startNode);
 
             // loop through discovered nodes    
             for (; !nodeQueue.empty(); nodeQueue.pop())
             {
-                PlannerTemplate::Node<S,A> node = nodeQueue.top();
+                Node<V, E> node = nodeQueue.top();
 
-                exploredStates.emplace(*node.GetState(), PlannerTemplate::StateStatus::Solved);
+                exploredVertices.emplace(*node.GetVertex(), StateStatus::Solved);
 
                 // Check if goal
-                if (*node.GetState() == *goal)
+                if (*node.GetVertex() == *goal)
                 {
-                    std::shared_ptr<PlannerTemplate::Connection<S, A>> parent = node.GetParent();
+                    std::shared_ptr<Connection<V, E>> parent = node.GetParent();
 
                     while (parent != nullptr)
                     {
                         path->push_back(parent);
-                        parent = nodeMap.find(*parent->GetState())->second.GetParent();
+                        parent = nodeMap.find(*parent->GetVertex())->second.GetParent();
                     }
 
                     std::reverse(path->begin(), path->end());
@@ -55,29 +56,24 @@ namespace PathPlanningLib{
                     return true;
                 }
 
-                std::vector<std::shared_ptr<PlannerTemplate::Connection<S, A>>> connections = node.GetConnections(this->m_Actions);
+                std::vector<std::shared_ptr<Connection<const V, const E>>> connections = node.GetConnections();
 
                 // loop through connections
-                for (std::shared_ptr<PlannerTemplate::Connection<S, A>> connection : connections)
+                for (std::shared_ptr<Connection<const V, const E>> connection : connections)
                 {
-                    std::shared_ptr<const S> state = connection->GetState();
-
-                    if (!state->IsValid())
-                    {
-                        continue;
-                    }
+                    std::shared_ptr<const V> vertex = connection->GetVertex();
 
                     //check if connection has been found before
-                    if (exploredStates.count(*state) == 0)
+                    if (exploredVertices.count(*vertex) == 0)
                     {
-                        PlannerTemplate::Node<S, A> connectedNode(state, node, connection->GetAction(), this);
-                        exploredStates.emplace(*state, PlannerTemplate::StateStatus::Exploring);
-                        nodeMap.emplace(*state, connectedNode);
+                        Node<V, E> connectedNode(vertex, node, connection->GetEdge(), this);
+                        exploredVertices.emplace(*vertex, StateStatus::Exploring);
+                        nodeMap.emplace(*vertex, connectedNode);
                         nodeQueue.push(connectedNode);
                     }
-                    else if (exploredStates[*connection->GetState()] == PlannerTemplate::StateStatus::Exploring)
+                    else if (exploredVertices[*connection->GetVertex()] == StateStatus::Exploring)
                     {
-                        nodeMap.find(*state)->second.UpdateParent(node, connection->GetAction());
+                        nodeMap.find(*vertex)->second.UpdateParent(node, connection->GetEdge());
                     }
                     else
                     {
@@ -89,9 +85,9 @@ namespace PathPlanningLib{
             return false;
         }
 
-        virtual float CalculateCost(PlannerTemplate::Node<S, A>& parent, const std::shared_ptr<const S>& state, const std::shared_ptr<const A>& action) const override
+        virtual float CalculateCost(Node<V, E>& parent, const std::shared_ptr<const V>& vertex, const std::shared_ptr<const E>& edge) const override
         {
-            return parent.GetCost() + parent.GetState()->GetCostMultiplier() * action->GetCost();
+            return parent.GetCost() + parent.GetVertex()->GetCostMultiplier() * edge->GetCost();
         }
 
         // bool override PlanPath(std::vector<std::shared_ptr<PlannerTemplate::Connection>> *path, std::shared_ptr<const S> start, std::shared_ptr<const S> goal, const std::chrono::duration<float>& timeout)
